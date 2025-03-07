@@ -4,7 +4,6 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Inter } from 'next/font/google'
 import { GeistSans } from 'geist/font/sans';
 import "./globals.css";
-import UserProvider from "@/providers/UserProvider";
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -23,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={GeistSans.className}>
-        <UserProvider>
+
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -37,7 +36,7 @@ export default function RootLayout({
               <Toaster />
             </div>
           </ThemeProvider>
-        </UserProvider>
+
       </body>
     </html>
   );
