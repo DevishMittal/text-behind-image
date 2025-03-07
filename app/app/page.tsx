@@ -12,9 +12,7 @@ import { Accordion } from '@/components/ui/accordion';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ModeToggle } from '@/components/mode-toggle';
 import TextCustomizer from '@/components/editor/text-customizer';
-
 import { PlusIcon, ReloadIcon } from '@radix-ui/react-icons';
-
 import { removeBackground } from "@imgly/background-removal";
 
 import '@/app/fonts.css';
