@@ -33,31 +33,7 @@ const page = () => {
                 </Link>
             </motion.div>
 
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl"
-            >
-                <img 
-                    src="/example-preview.jpg" 
-                    alt="Text Behind Image Editor Preview" 
-                    className="w-full h-auto"
-                    onError={(e) => {
-                        // Fallback if image doesn't exist
-                        e.currentTarget.style.display = 'none';
-                    }}
-                />
-            </motion.div>
-
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-16 text-center text-sm text-gray-500 dark:text-gray-400"
-            >
-                © {new Date().getFullYear()} | Text Behind Image | All Rights Reserved
-            </motion.div>
+         
         </div>
     );
 }
