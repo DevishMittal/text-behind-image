@@ -30,7 +30,7 @@ const Page = () => {
         paid: true,
         subscription_id: ''
     };
-    
+
     const [currentUser] = useState(defaultUser);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [isImageSetupDone, setIsImageSetupDone] = useState<boolean>(false);
@@ -86,7 +86,7 @@ const Page = () => {
     };
 
     const handleAttributeChange = (id: number, attribute: string, value: any) => {
-        setTextSets(prev => prev.map(set => 
+        setTextSets(prev => prev.map(set =>
             set.id === id ? { ...set, [attribute]: value } : set
         ));
     };
@@ -102,39 +102,39 @@ const Page = () => {
 
     const saveCompositeImage = () => {
         if (!canvasRef.current || !isImageSetupDone) return;
-    
+
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
-    
+
         const bgImg = new (window as any).Image();
         bgImg.crossOrigin = "anonymous";
         bgImg.onload = () => {
             canvas.width = bgImg.width;
             canvas.height = bgImg.height;
-    
+
             ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
-    
+
             textSets.forEach(textSet => {
                 ctx.save();
-                
+
                 // Set up text properties
                 ctx.font = `${textSet.fontWeight} ${textSet.fontSize * 3}px ${textSet.fontFamily}`;
                 ctx.fillStyle = textSet.color;
                 ctx.globalAlpha = textSet.opacity;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-    
+
                 const x = canvas.width * (textSet.left + 50) / 100;
                 const y = canvas.height * (50 - textSet.top) / 100;
-    
+
                 // Move to position first
                 ctx.translate(x, y);
-                
+
                 // Apply 3D transforms
                 const tiltXRad = (-textSet.tiltX * Math.PI) / 180;
                 const tiltYRad = (-textSet.tiltY * Math.PI) / 180;
-    
+
                 // Use a simpler transform that maintains the visual tilt
                 ctx.transform(
                     Math.cos(tiltYRad),          // Horizontal scaling
@@ -144,15 +144,15 @@ const Page = () => {
                     0,                           // Horizontal translation
                     0                            // Vertical translation
                 );
-    
+
                 // Apply rotation last
                 ctx.rotate((textSet.rotation * Math.PI) / 180);
-    
+
                 // Draw text at transformed position
                 ctx.fillText(textSet.text, 0, 0);
                 ctx.restore();
             });
-    
+
             if (removedBgImageUrl) {
                 const removedBgImg = new (window as any).Image();
                 removedBgImg.crossOrigin = "anonymous";
@@ -166,7 +166,7 @@ const Page = () => {
             }
         };
         bgImg.src = selectedImage || '';
-    
+
         function triggerDownload() {
             const dataUrl = canvas.toDataURL('image/png');
             const link = document.createElement('a');
@@ -180,10 +180,10 @@ const Page = () => {
         <div className='flex flex-col h-screen'>
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1609710199882100" crossOrigin="anonymous"></script>
             <div className='flex flex-col h-screen'>
-                
+
                 <header className='flex flex-row items-center justify-between p-5 px-10'>
                     <h2 className="text-4xl md:text-2xl font-semibold tracking-tight">
-                        <span className="block md:hidden">TBI</span>
+                        {/* <span className="block md:hidden">TBI</span> */}
                         <span className="hidden md:block">Text behind image editor</span>
                     </h2>
                     <div className='flex gap-4 items-center'>
@@ -195,20 +195,7 @@ const Page = () => {
                             accept=".jpg, .jpeg, .png"
                         />
                         <div className='flex items-center gap-5'>
-                            <div className='hidden md:block font-semibold'>
-                                {currentUser.paid ? (
-                                    <p className='text-sm'>
-                                        Unlimited generations
-                                    </p>
-                                ) : (
-                                    <div className='flex items-center gap-2'>
-                                        <p className='text-sm'>
-                                            {2 - (currentUser.images_generated)} generations left
-                                        </p>
 
-                                    </div>
-                                )}
-                            </div>
                             <div className='flex gap-2'>
                                 <Button onClick={handleUploadImage}>
                                     Upload image
@@ -221,27 +208,10 @@ const Page = () => {
                             </div>
                         </div>
                         <ModeToggle />
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Avatar className="cursor-pointer">
-                                    <AvatarImage src={currentUser?.avatar_url} /> 
-                                    <AvatarFallback>TBI</AvatarFallback>
-                                </Avatar>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="end">
-                                <DropdownMenuLabel>
-                                    <div className="flex flex-col space-y-1">
-                                        <p className="text-sm font-medium leading-none">{currentUser?.full_name}</p>
-                                        <p className="text-xs leading-none text-muted-foreground">{currentUser?.username}</p>
-                                    </div>
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                            
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+
                     </div>
                 </header>
-                <Separator /> 
+                <Separator />
                 {selectedImage ? (
                     <div className='flex flex-col md:flex-row items-start justify-start gap-10 w-full h-screen px-10 mt-2'>
                         <div className="flex flex-col items-start justify-start w-full md:w-1/2 gap-4">
@@ -260,7 +230,7 @@ const Page = () => {
                                             <p className='text-sm'>
                                                 {2 - (currentUser.images_generated)} generations left
                                             </p>
-                                           
+
                                         </div>
                                     )}
                                 </div>
@@ -268,11 +238,11 @@ const Page = () => {
                             <div className="min-h-[400px] w-[80%] p-4 border border-border rounded-lg relative overflow-hidden">
                                 {isImageSetupDone ? (
                                     <Image
-                                        src={selectedImage} 
+                                        src={selectedImage}
                                         alt="Uploaded"
                                         layout="fill"
-                                        objectFit="contain" 
-                                        objectPosition="center" 
+                                        objectFit="contain"
+                                        objectPosition="center"
                                     />
                                 ) : (
                                     <span className='flex items-center w-full gap-2'><ReloadIcon className='animate-spin' /> Loading, please wait</span>
@@ -308,19 +278,19 @@ const Page = () => {
                                         src={removedBgImageUrl}
                                         alt="Removed bg"
                                         layout="fill"
-                                        objectFit="contain" 
-                                        objectPosition="center" 
+                                        objectFit="contain"
+                                        objectPosition="center"
                                         className="absolute top-0 left-0 w-full h-full"
-                                    /> 
+                                    />
                                 )}
                             </div>
                         </div>
                         <div className='flex flex-col w-full md:w-1/2'>
-                            <Button variant={'secondary'} onClick={addNewTextSet}><PlusIcon className='mr-2'/> Add New Text Set</Button>
+                            <Button variant={'secondary'} onClick={addNewTextSet}><PlusIcon className='mr-2' /> Add New Text Set</Button>
                             <ScrollArea className="h-[calc(100vh-10rem)] p-2">
                                 <Accordion type="single" collapsible className="w-full mt-2">
                                     {textSets.map(textSet => (
-                                        <TextCustomizer 
+                                        <TextCustomizer
                                             key={textSet.id}
                                             textSet={textSet}
                                             handleAttributeChange={handleAttributeChange}
@@ -337,7 +307,7 @@ const Page = () => {
                     <div className='flex items-center justify-center min-h-screen w-full'>
                         <h2 className="text-xl font-semibold">Welcome, get started by uploading an image!</h2>
                     </div>
-                )} 
+                )}
             </div>
         </div>
     );
