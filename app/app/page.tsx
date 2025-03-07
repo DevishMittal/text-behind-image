@@ -19,8 +19,7 @@ import { removeBackground } from "@imgly/background-removal";
 
 import '@/app/fonts.css';
 import PayDialog from '@/components/pay-dialog';
-import AppAds from '@/components/editor/app-ads';
-import FirecrawlAd from '@/ads/firecrawl';
+
 
 const Page = () => {
     const defaultUser = {
@@ -38,7 +37,6 @@ const Page = () => {
     const [isImageSetupDone, setIsImageSetupDone] = useState<boolean>(false);
     const [removedBgImageUrl, setRemovedBgImageUrl] = useState<string | null>(null);
     const [textSets, setTextSets] = useState<Array<any>>([]);
-    const [isPayDialogOpen, setIsPayDialogOpen] = useState<boolean>(false); 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -183,7 +181,7 @@ const Page = () => {
         <div className='flex flex-col h-screen'>
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1609710199882100" crossOrigin="anonymous"></script>
             <div className='flex flex-col h-screen'>
-                <FirecrawlAd />
+                
                 <header className='flex flex-row items-center justify-between p-5 px-10'>
                     <h2 className="text-4xl md:text-2xl font-semibold tracking-tight">
                         <span className="block md:hidden">TBI</span>
@@ -208,13 +206,7 @@ const Page = () => {
                                         <p className='text-sm'>
                                             {2 - (currentUser.images_generated)} generations left
                                         </p>
-                                        <Button 
-                                            variant="link" 
-                                            className="p-0 h-auto text-sm text-primary hover:underline"
-                                            onClick={() => setIsPayDialogOpen(true)}
-                                        >
-                                            Upgrade
-                                        </Button>
+
                                     </div>
                                 )}
                             </div>
@@ -245,9 +237,7 @@ const Page = () => {
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => setIsPayDialogOpen(true)}>
-                                    <button>{currentUser?.paid ? 'View Plan' : 'Upgrade to Pro'}</button>
-                                </DropdownMenuItem>
+                            
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -271,13 +261,7 @@ const Page = () => {
                                             <p className='text-sm'>
                                                 {2 - (currentUser.images_generated)} generations left
                                             </p>
-                                            <Button 
-                                                variant="link" 
-                                                className="p-0 h-auto text-sm text-primary hover:underline"
-                                                onClick={() => setIsPayDialogOpen(true)}
-                                            >
-                                                Upgrade
-                                            </Button>
+                                           
                                         </div>
                                     )}
                                 </div>
@@ -331,7 +315,6 @@ const Page = () => {
                                     /> 
                                 )}
                             </div>
-                            <AppAds />
                         </div>
                         <div className='flex flex-col w-full md:w-1/2'>
                             <Button variant={'secondary'} onClick={addNewTextSet}><PlusIcon className='mr-2'/> Add New Text Set</Button>
@@ -356,7 +339,6 @@ const Page = () => {
                         <h2 className="text-xl font-semibold">Welcome, get started by uploading an image!</h2>
                     </div>
                 )} 
-                <PayDialog userDetails={currentUser as any} userEmail={currentUser.username} isOpen={isPayDialogOpen} onClose={() => setIsPayDialogOpen(false)} /> 
             </div>
         </div>
     );
