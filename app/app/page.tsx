@@ -18,7 +18,6 @@ import { PlusIcon, ReloadIcon } from '@radix-ui/react-icons';
 import { removeBackground } from "@imgly/background-removal";
 
 import '@/app/fonts.css';
-import PayDialog from '@/components/pay-dialog';
 
 
 const Page = () => {
