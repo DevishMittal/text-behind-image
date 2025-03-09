@@ -8,7 +8,6 @@ A web application for creating dynamic visual designs by placing text behind tra
 - **Text Customization**:
   - Position text elements anywhere behind your image
   - Adjust font family, size, color, rotation
-  - Apply 3D tilt effects (X/Y perspective rotation)
   - Control text opacity and letter spacing
 - **Live Preview**: See changes instantly as you adjust text properties
 - **Download**: Export your design as a high-quality PNG image

@@ -26,8 +26,7 @@ interface TextCustomizerProps {
         rotation: number;
         shadowColor: string;
         shadowSize: number;
-        tiltX: number;
-        tiltY: number;
+    
     };
     handleAttributeChange: (id: number, attribute: string, value: any) => void;
     removeTextSet: (id: number) => void;
@@ -47,8 +46,6 @@ const TextCustomizer: React.FC<TextCustomizerProps> = ({ textSet, handleAttribut
         { id: 'fontWeight', icon: <Bold size={20} />, label: 'Weight' },
         { id: 'opacity', icon: <LightbulbIcon size={20} />, label: 'Opacity' },
         { id: 'rotation', icon: <RotateCw size={20} />, label: 'Rotate' },
-        { id: 'tiltX', icon: <ArrowLeftRight size={20} />, label: 'Tilt X' },
-        { id: 'tiltY', icon: <ArrowUpDown size={20} />, label: 'Tilt Y' },
     ];
 
     return (
@@ -72,7 +69,7 @@ const TextCustomizer: React.FC<TextCustomizerProps> = ({ textSet, handleAttribut
                                 </button>
                             ))}
                         </div>
-                        <ScrollBar orientation="horizontal" />
+                       
                     </ScrollArea>
 
                     <div>
@@ -174,29 +171,9 @@ const TextCustomizer: React.FC<TextCustomizerProps> = ({ textSet, handleAttribut
                             />
                         )}
 
-                        {activeControl === 'tiltX' && (
-                            <SliderField
-                                attribute="tiltX"
-                                label="Horizontal Tilt"
-                                min={-45}
-                                max={45}
-                                step={1}
-                                currentValue={textSet.tiltX}
-                                handleAttributeChange={(attribute, value) => handleAttributeChange(textSet.id, attribute, value)}
-                            />
-                        )}
+                     
 
-                        {activeControl === 'tiltY' && (
-                            <SliderField
-                                attribute="tiltY"
-                                label="Vertical Tilt"
-                                min={-45}
-                                max={45}
-                                step={1}
-                                currentValue={textSet.tiltY}
-                                handleAttributeChange={(attribute, value) => handleAttributeChange(textSet.id, attribute, value)}
-                            />
-                        )}
+                       
                     </div>
                 </div>
 
@@ -276,24 +253,7 @@ const TextCustomizer: React.FC<TextCustomizerProps> = ({ textSet, handleAttribut
                         currentValue={textSet.rotation}
                         handleAttributeChange={(attribute, value) => handleAttributeChange(textSet.id, attribute, value)}
                     />
-                    <SliderField
-                        attribute="tiltX"
-                        label="Horizontal Tilt"
-                        min={-45}
-                        max={45}
-                        step={1}
-                        currentValue={textSet.tiltX}
-                        handleAttributeChange={(attribute, value) => handleAttributeChange(textSet.id, attribute, value)}
-                    />
-                    <SliderField
-                        attribute="tiltY"
-                        label="Vertical Tilt"
-                        min={-45}
-                        max={45}
-                        step={1}
-                        currentValue={textSet.tiltY}
-                        handleAttributeChange={(attribute, value) => handleAttributeChange(textSet.id, attribute, value)}
-                    />
+                 
                 </div>
 
                 <div className="flex flex-row gap-2 my-8">
