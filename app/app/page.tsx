@@ -78,8 +78,8 @@ const Page = () => {
             shadowColor: 'rgba(0, 0, 0, 0.8)',
             shadowSize: 4,
             rotation: 0,
-            tiltX: 0,
-            tiltY: 0
+            X: 0,
+            Y: 0
         }]);
     };
 
@@ -98,72 +98,100 @@ const Page = () => {
         setTextSets(prev => prev.filter(set => set.id !== id));
     };
 
+    const previewRef = useRef<HTMLDivElement>(null);
     const saveCompositeImage = () => {
-        if (!canvasRef.current || !isImageSetupDone) return;
+        if (!canvasRef.current || !isImageSetupDone || !previewRef.current || !selectedImage) return;
 
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        const bgImg = new (window as any).Image();
+        // Get the preview container dimensions
+        const previewWidth = previewRef.current.offsetWidth;
+        const previewHeight = previewRef.current.offsetHeight;
+
+        // Load the original image to get its dimensions
+        const bgImg = new window.Image();
         bgImg.crossOrigin = "anonymous";
         bgImg.onload = () => {
-            canvas.width = bgImg.width;
-            canvas.height = bgImg.height;
+            const originalWidth = bgImg.width;
+            const originalHeight = bgImg.height;
 
-            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+            // Set canvas dimensions to the original image size to preserve resolution
+            canvas.width = originalWidth;
+            canvas.height = originalHeight;
 
+            // Calculate how the image is scaled in the live preview
+            const previewAspectRatio = previewWidth / previewHeight;
+            const imageAspectRatio = originalWidth / originalHeight;
+
+            let scaledWidth = previewWidth;
+            let scaledHeight = previewHeight;
+
+            // Determine the scaled dimensions in the preview (same logic as objectFit="contain")
+            if (previewAspectRatio > imageAspectRatio) {
+                scaledWidth = previewHeight * imageAspectRatio;
+                scaledHeight = previewHeight;
+            } else {
+                scaledWidth = previewWidth;
+                scaledHeight = previewWidth / imageAspectRatio;
+            }
+
+            // Calculate the scale factor between the preview's scaled size and the original size
+            const scaleFactorX = scaledWidth / originalWidth;
+            const scaleFactorY = scaledHeight / originalHeight;
+            const scaleFactor = Math.min(scaleFactorX, scaleFactorY);
+
+            // Draw the background image at the original size
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(bgImg, 0, 0, originalWidth, originalHeight);
+
+            // Draw text sets
             textSets.forEach(textSet => {
                 ctx.save();
 
-                // Set up text properties
-                ctx.font = `${textSet.fontWeight} ${textSet.fontSize * 3}px ${textSet.fontFamily}`;
+                // Adjust text coordinates to match the preview's scaled context
+                const scaledX = (scaledWidth * (textSet.left + 50) / 100);
+                const scaledY = (scaledHeight * (50 - textSet.top) / 100);
+
+                // Convert scaled coordinates back to the original image's coordinate system
+                const x = scaledX / scaleFactorX;
+                const y = scaledY / scaleFactorY;
+
+                // Scale the font size to match the preview
+                const scaledFontSize = textSet.fontSize / scaleFactor;
+
+                ctx.font = `${textSet.fontWeight} ${scaledFontSize}px ${textSet.fontFamily}`;
                 ctx.fillStyle = textSet.color;
                 ctx.globalAlpha = textSet.opacity;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
 
-                const x = canvas.width * (textSet.left + 50) / 100;
-                const y = canvas.height * (50 - textSet.top) / 100;
-
-                // Move to position first
                 ctx.translate(x, y);
-
-                // Apply 3D transforms
-                const tiltXRad = (-textSet.tiltX * Math.PI) / 180;
-                const tiltYRad = (-textSet.tiltY * Math.PI) / 180;
-
-                // Use a simpler transform that maintains the visual tilt
-                ctx.transform(
-                    Math.cos(tiltYRad),          // Horizontal scaling
-                    Math.sin(0),          // Vertical skewing
-                    -Math.sin(0),         // Horizontal skewing
-                    Math.cos(tiltXRad),          // Vertical scaling
-                    0,                           // Horizontal translation
-                    0                            // Vertical translation
-                );
-
-                // Apply rotation last
                 ctx.rotate((textSet.rotation * Math.PI) / 180);
-
-                // Draw text at transformed position
                 ctx.fillText(textSet.text, 0, 0);
+
                 ctx.restore();
             });
 
+            // Draw the removed background image last
             if (removedBgImageUrl) {
-                const removedBgImg = new (window as any).Image();
+                const removedBgImg = new window.Image();
                 removedBgImg.crossOrigin = "anonymous";
                 removedBgImg.onload = () => {
-                    ctx.drawImage(removedBgImg, 0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(removedBgImg, 0, 0, originalWidth, originalHeight);
                     triggerDownload();
                 };
                 removedBgImg.src = removedBgImageUrl;
             } else {
                 triggerDownload();
             }
+            textSets.forEach(textSet => {
+                const scaledFontSize = textSet.fontSize / scaleFactor;
+            
+            });
         };
-        bgImg.src = selectedImage || '';
+        bgImg.src = selectedImage;
 
         function triggerDownload() {
             const dataUrl = canvas.toDataURL('image/png');
@@ -174,9 +202,9 @@ const Page = () => {
         }
     };
 
+
     return (
         <div className='flex flex-col h-screen'>
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1609710199882100" crossOrigin="anonymous"></script>
             <div className='flex flex-col h-screen'>
 
                 <header className='flex flex-row items-center justify-between p-5 px-10'>
@@ -233,7 +261,7 @@ const Page = () => {
                                     )}
                                 </div>
                             </div>
-                            <div className="min-h-[400px] w-[80%] p-4 border border-border rounded-lg relative overflow-hidden">
+                            <div className="min-h-[400px] w-[80%] p-4 border border-border rounded-lg relative overflow-hidden" ref={previewRef}>
                                 {isImageSetupDone ? (
                                     <Image
                                         src={selectedImage}
@@ -256,8 +284,8 @@ const Page = () => {
                                                 translate(-50%, -50%) 
                                                 rotate(${textSet.rotation}deg)
                                                 perspective(1000px)
-                                                rotateX(${textSet.tiltX}deg)
-                                                rotateY(${textSet.tiltY}deg)
+                                                rotateX(${textSet.X}deg)
+                                                rotateY(${textSet.Y}deg)
                                             `,
                                             color: textSet.color,
                                             textAlign: 'center',
